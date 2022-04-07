@@ -6,10 +6,18 @@ jobs:
   run-github-actions:
     runs-on: ubuntu-latest
     steps:
+      # Result: we're in our own directory of the runner machine, but with no files
       - name: where am i?
         run: |
           pwd
           ls
+      # This will checkout the files from your repository and pull them into the runner
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: where am i?
+        run: |
+          pwd
+          ls -a 
       - name: Simple JS Action
         # id allows us to reference this step in other steps
         id: greet
