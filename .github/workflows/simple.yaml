@@ -2,7 +2,7 @@ name: Shell commands
 
 on: [push]
 
-# Jobs run in parallel on separate machines
+# Jobs run in parallel by default, on separate machines
 jobs:
   run-shell-command:
     runs-on: ubuntu-latest
@@ -23,6 +23,7 @@ jobs:
 jobs:
   run-windows-command:
     runs-on: windows-latest
+    needs: ["run-shell-command"]  # Waits for these jobs to finish before running
     steps:
       - name: PowerShell directory
         run: Get-Location
