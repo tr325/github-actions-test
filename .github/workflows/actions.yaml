@@ -3,10 +3,12 @@ name: Actions workflow
 # Any GitHub event can trigger a workflow
 # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 on:
-  push:
   # We want this pull request to also run on closed (by default just opened/re-opened)
+  # PR workflows run against a MERGE of two branches (source and target) in the PR
   pull_request:
     types: [closed, assigned, opened, reopened]
+  schedule:
+    - cron: "0/5 * * * *"
 
 jobs:
   run-github-actions:
