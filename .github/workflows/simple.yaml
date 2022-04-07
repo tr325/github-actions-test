@@ -2,9 +2,11 @@ name: Shell commands
 
 on: [push]
 
+# Jobs run in parallel on separate machines
 jobs:
   run-shell-command:
     runs-on: ubuntu-latest
+    # Steps run in sequence, on the same machine
     steps:
       - name: echo a string
         run: echo "Hello world"
@@ -17,3 +19,13 @@ jobs:
           import platform
           print(platform.processor())
         shell: python
+
+jobs:
+  run-windows-command:
+    runs-on: windows-latest
+    steps:
+      - name: PowerShell directory
+        run: Get-Location
+      - name: Bash directory
+        run: pwd
+        shell: bash
