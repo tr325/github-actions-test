@@ -1,7 +1,12 @@
 name: Actions workflow
 
 # Any GitHub event can trigger a workflow
-on: [push, pull_request]
+# https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+on:
+  push:
+  # We want this pull request to also run on closed (by default just opened/re-opened)
+  pull_request:
+    types: [closed, assigned, opened, reopened]
 
 jobs:
   run-github-actions:
@@ -30,6 +35,7 @@ jobs:
         id: greet
         # Actions can be defined locally with a relative path, or from a public repository
         # here, this is public, and we are using the v1 release
+        # https://github.com/marketplace?type=actions
         uses: actions/hello-world-javascript-action@v1
         # Inputs for the action (keys defined by the action itself)
         with:
