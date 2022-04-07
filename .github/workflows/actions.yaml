@@ -13,7 +13,7 @@ jobs:
       - name: where am i?
         run: |
           pwd
-          ls
+          ls -a
           echo $GITHUB_SHA
           echo $GITHUB_REPOSITORY
           echo $GITHUB_WORKSPACE
