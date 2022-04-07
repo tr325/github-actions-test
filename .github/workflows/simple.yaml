@@ -1,6 +1,6 @@
 name: Shell commands
 
-on: [push]
+on: [pull_request]
 
 # Jobs run in parallel by default, on separate machines
 jobs:
