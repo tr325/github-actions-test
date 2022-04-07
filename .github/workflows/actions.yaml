@@ -7,8 +7,15 @@ on:
   # PR workflows run against a MERGE of two branches (source and target) in the PR
   pull_request:
     types: [closed, assigned, opened, reopened]
-  schedule:
-    - cron: "0/5 * * * *"
+  # You can use cron to run regularly
+  # schedule:
+  #   - cron: "0/5 * * * *"
+  # You can also trigger them manually using this option, with a POST to the actions endpoint
+  #  (if enabled here). Endpoint uses Basic Auth, Token enabled in your Github repo:
+  # https://docs.github.com/en/rest/reference/repos#create-a-repository-dispatch-event
+  repository_dispatch:
+    # Which event types it will run on - should be posted to the endpoint
+    types: [build]
 
 jobs:
   run-github-actions:
