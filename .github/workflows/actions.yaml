@@ -6,6 +6,10 @@ jobs:
   run-github-actions:
     runs-on: ubuntu-latest
     steps:
+      - name: where am i?
+        run: |
+          pwd
+          ls
       - name: Simple JS Action
         # id allows us to reference this step in other steps
         id: greet
