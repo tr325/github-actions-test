@@ -7,14 +7,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Result: we're in our own directory of the runner machine, but with no files
+      # Here are some additional env variables that are there by default, that allow you
+      #  to interact with your git repository. GITHUB_SHA is the current commit ID.
       - name: where am i?
         run: |
           pwd
           ls
+          echo $GITHUB_SHA
+          echo $GITHUB_REPOSITORY
+          echo $GITHUB_WORKSPACE
+          echo "${{ github.token }}"
       # This will checkout the files from your repository and pull them into the runner
       - name: Checkout
         uses: actions/checkout@v1
-      - name: where am i?
+      - name: where are my files?
         run: |
           pwd
           ls -a 
