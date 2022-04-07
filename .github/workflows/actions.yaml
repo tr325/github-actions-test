@@ -15,12 +15,17 @@ on:
   # https://docs.github.com/en/rest/reference/repos#create-a-repository-dispatch-event
   repository_dispatch:
     # Which event types it will run on - should be posted to the endpoint
+    # You can also send along a payload with variables, for confuring workflow options
+    #  These will be available in eg. ${{ github.event.client_payload.XXX }}
     types: [build]
 
 jobs:
   run-github-actions:
     runs-on: ubuntu-latest
     steps:
+      # List things in the `env` object posted to the repository_dispatch endpoint
+      - name: payload
+        run: echo ${{ github.event.client_payload.env }}
       # Result: we're in our own directory of the runner machine, but with no files
       # Here are some additional env variables that are there by default, that allow you
       #  to interact with your git repository. GITHUB_SHA is the current commit ID.
