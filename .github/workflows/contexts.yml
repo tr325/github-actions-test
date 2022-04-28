@@ -1,15 +1,18 @@
 name: Contexts
-on: push
+on: [push, pull_request]
 
 jobs:
   one:
     runs-on: ubuntu-latest
+    # No need for ${}, as anything in `if` statement is treated as an expression already
+    if: github.event_name == 'push'
     steps:
       - name: Dump github context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+        run: errrrrrrrrrrrr "$GITHUB_CONTEXT"
       - name: Dump env context
+        if: failure()   # Run (only) if the first step failed
         env:
           ENV_CONTEXT: ${{ toJson(env) }}
         run: echo "$ENV_CONTEXT"
@@ -22,6 +25,7 @@ jobs:
           STEPS_CONTEXT: ${{ toJson(steps) }}
         run: echo "$STEPS_CONTEXT"
       - name: Dump runner context
+        if: always()  # Run this always, no matter what (eg. for reporting results elsewhere)
         env:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: echo "$RUNNER_CONTEXT"
