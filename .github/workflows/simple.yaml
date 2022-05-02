@@ -6,10 +6,12 @@ on: [pull_request]
 jobs:
   run-shell-command:
     runs-on: ubuntu-latest
+    timeout-minutes: 360    # Can also be set on individual steps
     # Steps run in sequence, on the same machine
     steps:
       - name: echo a string
         run: echo "Hello world"
+        continue-on-ereror: true    # Run all subesquent steps even if this one fails
       - name: multiline script
         run: |
           node -v
