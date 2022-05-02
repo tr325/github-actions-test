@@ -27,11 +27,14 @@ jobs:
         with:
           entrypoint: ./script.sh
           args: "Here"
-      - name: Send a slack message
-        uses: docker://technosophos/slack-notify
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: "Pushed changes"
+      # We would replace this with eg. a step that notifies our Teams channel on merge to Master, (since that)
+      #  would trigger a release. Check dockerhub for similarly "out of the box" images, or just write yourself
+      #  a script that does the same.
+      # - name: Send a slack message
+      #   uses: docker://technosophos/slack-notify
+      #   env:
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      #     SLACK_MESSAGE: "Pushed changes"
   node-docker:
     runs-on: ubuntu-latest
     # Any steps in this job will run in this container, not directly on the runner
