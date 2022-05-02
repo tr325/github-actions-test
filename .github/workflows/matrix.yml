@@ -8,9 +8,23 @@ jobs:
         # User-defined variables for using in this matrix
         os: [macos-latest, ubuntu-latest, windows-latest]
         node-version: [6, 8, 10]
-      max-parallel: 3   # For managing load on your runners
+        # Remove specific option combinations from your matrix
+        exclude:
+          - os: ubuntu-latest
+            node-version: 6
+          - os: macos-latest
+            node-version: 8
+        # To include additional VARIABLES for specific matrix combinations
+        # NOT for adding combinations to your matrix
+        include:
+          - os: ubuntu-latest
+            node-version: 8
+            is-ubuntu-8: true
+      # max-parallel: 9   # For managing load on your runners
       fail-fast: true   # If one run fails, fail all the others
     runs-on: ${{ matrix.os }}
+    env:
+      IS_UBUNTU_8: ${{ matrix.is-ubuntu-8 }}
     steps:
       - name: Log node version
         run: node -v
@@ -19,3 +33,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Log node version
         run: node -v
+      - name: Is Ubuntu 8?
+        run: echo $IS_UBUNTU_8
+
