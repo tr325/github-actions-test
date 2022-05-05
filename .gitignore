@@ -1,1 +1,5 @@
 .DS_Store
+my-app/build/
+my-app/coverage/
+my-app/package-lock.json
+my-app/node_modules
