@@ -1,7 +1,9 @@
 name: CI
 on:
   pull_request:
-    branches: [develop]
+    branches: [develop]   # Triggers on a PR _to_ develop
+  push:
+    branches: [develop]   # Triggers on push to develop, ie. when a PR is merged in
 
 
 jobs:
@@ -18,3 +20,12 @@ jobs:
       - run: cd my-app && npm test -- --coverage
         env:
           CI: true
+      - name: Build project
+        if: github.event_name == 'push'
+        run: cd my-app && npm run build
+      - name: Deploy to staging
+        if: github.event_name == 'push'
+        run: cd my-app && npx surge --project ./build  --domain http://habitual-celery.surge.sh/  # Deploys to Surge
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
