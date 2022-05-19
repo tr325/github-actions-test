@@ -1,0 +1,31 @@
+name: CI
+on:
+  pull_request:
+    branches: [develop]   # Triggers on a PR _to_ develop
+  push:
+    branches: [develop]   # Triggers on push to develop, ie. when a PR is merged in
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - run: cd my-app && npm ci   # npm install, but "more suitable" for CI environments
+      - run: cd my-app && npm run format:check    # Need to `cd` in each command - pwd not persisted
+      - run: cd my-app && npm test -- --coverage
+        env:
+          CI: true
+      - name: Build project
+        if: github.event_name == 'push'
+        run: cd my-app && npm run build
+      - name: Deploy to staging
+        if: github.event_name == 'push'
+        run: cd my-app && npx surge --project ./build  --domain http://habitual-celery.surge.sh/  # Deploys to Surge
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}

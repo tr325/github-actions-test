@@ -1,6 +1,8 @@
 name: Shell commands
 
-on: [pull_request]
+on:
+  push:
+    branches: [master]
 
 # Jobs run in parallel by default, on separate machines
 jobs:

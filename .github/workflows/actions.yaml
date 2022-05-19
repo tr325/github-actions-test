@@ -21,8 +21,8 @@ on:
   push:
     branches:
       - master
-      - 'feature/*'   # Glob-style wildcarding - ie. _doesn't_ match feature/feat/X.
-      - '!feature/fc' # Ignore this branch
+      # - 'feature/*'   # Glob-style wildcarding - ie. _doesn't_ match feature/feat/X.
+      # - '!feature/fc' # Ignore this branch
     # branches-ignore:  -- inverse of `branches` - can't use both together
     # `tags` and `tags-ignore` also exist
     paths:
