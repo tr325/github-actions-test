@@ -11,6 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          # Search for any older cache that starts with the same path, so we can restore partial
+          # caches, when only part of our dependencies have updated
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Use NodeJS
         uses: actions/setup-node@v1
         with:
@@ -20,9 +29,20 @@ jobs:
       - run: cd my-app && npm test -- --coverage
         env:
           CI: true
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage
+          path: my-app/coverage
       - name: Build project
         if: github.event_name == 'push'
         run: cd my-app && npm run build
+      - name: Upload build
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v1
+        with:
+          name: build
+          path: my-app/build
       - name: Deploy to staging
         if: github.event_name == 'push'
         run: cd my-app && npx surge --project ./build  --domain http://habitual-celery.surge.sh/  # Deploys to Surge
