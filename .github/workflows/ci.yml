@@ -29,9 +29,19 @@ jobs:
       - run: cd my-app && npm test -- --coverage
         env:
           CI: true
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage
+          path: my-app/coverage
       - name: Build project
         if: github.event_name == 'push'
         run: cd my-app && npm run build
+      - name: Upload build
+        uses: actions/upload-artifact@v1
+        with:
+          name: build
+          path: my-app/build
       - name: Deploy to staging
         if: github.event_name == 'push'
         run: cd my-app && npx surge --project ./build  --domain http://habitual-celery.surge.sh/  # Deploys to Surge
