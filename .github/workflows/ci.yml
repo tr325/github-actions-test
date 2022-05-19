@@ -18,7 +18,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           # Search for any older cache that starts with the same path, so we can restore partial
           # caches, when only part of our dependencies have updated
-          restore-key: |
+          restore-keys: |
             ${{ runner.os }}-node-
       - name: Use NodeJS
         uses: actions/setup-node@v1
