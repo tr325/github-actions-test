@@ -1,14 +1,17 @@
 name: CI
 on:
   pull_request:
-    branches: [develop]   # Triggers on a PR _to_ develop
+    branches: [develop, master]   # Triggers on a PR _to_ develop or master
   push:
-    branches: [develop]   # Triggers on push to develop, ie. when a PR is merged in
+    branches: [develop, master]   # Triggers on push to develop or master, ie. when a PR is merged in
 
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+      SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
     steps:
       - uses: actions/checkout@v2
       - name: Cache node_modules
@@ -23,7 +26,7 @@ jobs:
       - name: Use NodeJS
         uses: actions/setup-node@v1
         with:
-          node-version: "12.x"
+          node-version: "16.x"
       - run: cd my-app && npm ci   # npm install, but "more suitable" for CI environments
       - run: cd my-app && npm run format:check    # Need to `cd` in each command - pwd not persisted
       - run: cd my-app && npm test -- --coverage
@@ -43,9 +46,34 @@ jobs:
         with:
           name: build
           path: my-app/build
-      - name: Deploy to staging
-        if: github.event_name == 'push'
-        run: cd my-app && npx surge --project ./build  --domain http://habitual-celery.surge.sh/  # Deploys to Surge
+      - name: Zip assets
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          cd my-app
+          zip -r build.zip ./build
+          zip -r coverage.zip ./coverage
+      - name: Create a release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: cd my-app && npx semantic-release
         env:
-          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
-          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy to staging
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        run: cd my-app && npx surge --project ./build  --domain habitual-celery.surge.sh  # Deploys to Surge
+      - name: Deploy to production
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: cd my-app && npx surge --project ./build  --domain upset-reaction.surge.sh  # Deploys to Surge
+      - name: Open issue
+        if: failure() && github.event_name == 'pull_request'
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/issues \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "title": "Automated issue - build failed for commit: ${{ github.sha }}",
+            "body": "This issue was automatically created by the GitHub Action workflow **${{ github.workflow }}**. \n\n The commit hash was: _${{ github.sha }}_.",
+            "assignees": ["${{ github.event.pull_request.user.login }}"]
+            }' \
+          --fail
+
