@@ -1,0 +1,19 @@
+name: Notify on Release
+on:
+  release:
+    type: [published]
+
+jobs:
+  slack-message:
+    runs-on: ubuntu-latest
+    steps:
+      # NOTE: Need to generate a personal token, not the generic ${{ secrets.GITHUB_TOKEN }} to trigger this, 
+      #  as "automated" releases from the github actions account don't trigger `published` events on releases
+      # We would replace this with eg. a step that notifies our Teams channel on merge to Master, (since that)
+      #  would trigger a release. Check dockerhub for similarly "out of the box" images, or just write yourself
+      #  a script that does the same.
+      # - name: Send a slack message
+      #   uses: docker://technosophos/slack-notify
+      #   env:
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      #     SLACK_MESSAGE: "New release ${{ github.event.release.tag_name }} is out, <${{ github.event.release.html_url }}|check it out now.>"
