@@ -1,0 +1,62 @@
+name: Container
+on:
+  push:
+    branches: [master]
+
+jobs:
+  docker-steps:
+    runs-on: ubuntu-latest
+    container:
+      image: node:10.18.0-jessie
+    steps:
+      - name: Log node version
+        run: node -v
+      - name: Step in a docker container
+        uses: docker://node:12.14.1-alpine3.10
+        with:
+          # MUST be just a path to the executable
+          entrypoint: '/bin/echo'
+          # Can only pass a single arg as a string
+          args: 'Hello world'
+      - name: Log node version in a docker container
+        uses: docker://node:12.14.1-alpine3.10
+        with:
+          entrypoint: /usr/local/bin/node
+          args: -v
+      - uses: actions/checkout@v1
+      - name: Run a script from this repository
+        uses: docker://node:12.14.1-alpine3.10
+        with:
+          entrypoint: ./script.sh
+          args: "Here"
+      # We would replace this with eg. a step that notifies our Teams channel on merge to Master, (since that)
+      #  would trigger a release. Check dockerhub for similarly "out of the box" images, or just write yourself
+      #  a script that does the same.
+      # - name: Send a slack message
+      #   uses: docker://technosophos/slack-notify
+      #   env:
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      #     SLACK_MESSAGE: "Pushed changes"
+  node-docker:
+    runs-on: ubuntu-latest
+    # Any steps in this job will run in this container, not directly on the runner
+    # Note: setup for the workflow can take a few seconds longer if you set up a container
+    # container: node:13.5.0-alpine3.10
+    # Runs multiple containers on the machine. Steps will now run in the VM, _not_ in a container
+    services:
+      app:
+        image: alialaa17/node-api
+        ports:
+          - 3001:3000
+      mongo:
+        image: mongo
+        ports:
+          - "27017:27017"
+
+    steps:
+      # Runs in the VM, not within a container
+      - name: Post a user
+        run: "curl -X POST http://localhost:3001/api/user -H 'Content-type: application/json' -d ' {\"username\": \"hello\", \"address\": \"dwded\"}'"
+      - name: Get users
+        run: "curl -X GET http://localhost:3001/api/users"
+

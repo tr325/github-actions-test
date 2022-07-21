@@ -1,0 +1,63 @@
+name: Contexts
+on:
+  push:
+    branches: [master]
+
+jobs:
+  one:
+    runs-on: ubuntu-latest
+    # No need for ${}, as anything in `if` statement is treated as an expression already
+    if: github.event_name == 'push'
+    steps:
+      - name: Dump github context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: errrrrrrrrrrrr "$GITHUB_CONTEXT"
+      - name: Dump env context
+        if: failure()   # Run (only) if the first step failed
+        env:
+          ENV_CONTEXT: ${{ toJson(env) }}
+        run: echo "$ENV_CONTEXT"
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo "$JOB_CONTEXT"
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$STEPS_CONTEXT"
+      - name: Dump runner context
+        if: always()  # Run this always, no matter what (eg. for reporting results elsewhere)
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+      - name: Dump secrets context
+        env:
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+        run: echo "$SECRETS_CONTEXT"
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+        run: echo "$STRATEGY_CONTEXT"
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTEXT"
+      - name: Dump needs context
+        env:
+          NEEDS_CONTEXT: ${{ toJson(needs) }}
+        run: echo "$NEEDS_CONTEXT"
+      - name: Dump inputs context
+        env:
+          INPUTS_CONTEXT: ${{ toJson(inputs) }}
+        run: echo "$INPUTS_CONTEXT"
+  functions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: dump
+        # Function list: https://docs.github.com/en/actions/learn-github-actions/expressions#functions
+        run: |
+          echo ${{ contains('hello', 'll') }}
+          echo ${{ startsWith('hello', 'he') }}
+          echo ${{ endsWith('hello', 'lo') }}
+          echo ${{ format('Hello {0} {1} {2}', 'World', '!', '!') }}

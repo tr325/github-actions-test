@@ -5,19 +5,29 @@ name: Actions workflow
 on:
   # We want this pull request to also run on closed (by default just opened/re-opened)
   # PR workflows run against a MERGE of two branches (source and target) in the PR
-  pull_request:
-    types: [closed, assigned, opened, reopened]
+  # pull_request:
+  #   types: [closed, assigned, opened, reopened]
   # You can use cron to run regularly
   # schedule:
-  #   - cron: "0/5 * * * *"
+  #   - cron: '0/5 * * * *'
   # You can also trigger them manually using this option, with a POST to the actions endpoint
   #  (if enabled here). Endpoint uses Basic Auth, Token enabled in your Github repo:
   # https://docs.github.com/en/rest/reference/repos#create-a-repository-dispatch-event
-  repository_dispatch:
+  # repository_dispatch:
     # Which event types it will run on - should be posted to the endpoint
     # You can also send along a payload with variables, for confuring workflow options
     #  These will be available in eg. ${{ github.event.client_payload.XXX }}
-    types: [build]
+    # types: [build]
+  push:
+    branches:
+      - master
+      # - 'feature/*'   # Glob-style wildcarding - ie. _doesn't_ match feature/feat/X.
+      # - '!feature/fc' # Ignore this branch
+    # branches-ignore:  -- inverse of `branches` - can't use both together
+    # `tags` and `tags-ignore` also exist
+    paths:
+      - '**.js'       # Only triggers on JS file changes
+    # paths-ignore:   --  inverse of `paths` - can't use both together
 
 jobs:
   run-github-actions:
