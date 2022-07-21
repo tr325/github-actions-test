@@ -23,9 +23,9 @@ jobs:
       - name: Use NodeJS
         uses: actions/setup-node@v1
         with:
-          node-version: "12.x"
+          node-version: "16.x"
       - run: cd my-app && npm ci   # npm install, but "more suitable" for CI environments
-      - run: cd my-app && npm run format    # Need to `cd` in each command - pwd not persisted
+      - run: cd my-app && npm run format:check    # Need to `cd` in each command - pwd not persisted
       - run: cd my-app && npm test -- --coverage
         env:
           CI: true
