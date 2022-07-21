@@ -1,9 +1,9 @@
 name: CI
 on:
   pull_request:
-    branches: [develop]   # Triggers on a PR _to_ develop
+    branches: [develop, master]   # Triggers on a PR _to_ develop or master
   push:
-    branches: [develop]   # Triggers on push to develop, ie. when a PR is merged in
+    branches: [develop, master]   # Triggers on push to develop or master, ie. when a PR is merged in
 
 
 jobs:
@@ -43,6 +43,11 @@ jobs:
         with:
           name: build
           path: my-app/build
+      - name: Create a release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy to staging
         if: github.event_name == 'push'
         run: cd my-app && npx surge --project ./build  --domain http://habitual-celery.surge.sh/  # Deploys to Surge
