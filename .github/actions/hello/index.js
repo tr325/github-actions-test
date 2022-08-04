@@ -8,7 +8,7 @@ try {
 
     core.debug("Debug message");        // Only logs if ACTION_STEP_DEBUG = true, set in GH secrets'
     core.warning("Warning message");
-    core.error("Warning message");      // Won't fail the job, but will log in RED
+    core.error("ERROR message");      // Won't fail the job, but will log in RED
 
     const name = core.getInput("who-to-greet");
     core.setSecret(name);       // won't be logged
