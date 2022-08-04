@@ -1289,7 +1289,7 @@ try {
 	const assignees = core.getInput("assignees");
 
 	const octokit = github.getOctokit(token);
-	const response = octokit.issues.create({
+	const response = octokit.rest.issues.create({
 		...github.context.repo,
 		title,
 		body,
