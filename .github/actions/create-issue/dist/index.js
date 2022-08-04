@@ -1282,24 +1282,27 @@ module.exports = require("assert");
 const core = __webpack_require__(470);
 const github = __webpack_require__(469);
 
-try {
-	const token = core.getInput("token");
-	const title = core.getInput("title");
-	const body = core.getInput("body");
-	const assignees = core.getInput("assignees");
 
-	const octokit = github.getOctokit(token);
-	const response = octokit.rest.issues.create({
-		...github.context.repo,
-		title,
-		body,
-		assignees: assignees ? assignees.split('\n') : undefined
-	});
+(async function run() {
+    try {
+        const token = core.getInput("token");
+        const title = core.getInput("title");
+        const body = core.getInput("body");
+        const assignees = core.getInput("assignees");
 
-	core.setOutput("issue", JSON.stringify(response, null, 2));
-} catch(e) {
-	core.setFailed(e.message);
-}
+        const octokit = github.getOctokit(token);
+        const response = await octokit.rest.issues.create({
+            ...github.context.repo,
+            title,
+            body,
+            assignees: assignees ? assignees.split('\n') : undefined
+        });
+
+        core.setOutput("issue", JSON.stringify(response, null, 2));
+    } catch(e) {
+        core.setFailed(e.message);
+    }
+})();
 
 /***/ }),
 
