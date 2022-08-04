@@ -1,0 +1,14 @@
+name: Hello World
+author: Tom Renner
+description: Says hi
+inputs:
+  who-to-greet:
+    description: "Who to say hi to"
+    required: true
+    default: Tom
+outputs:
+  time:
+    description: "When you're saying hi"
+runs:
+  using: "node12"
+  main: "index.js"

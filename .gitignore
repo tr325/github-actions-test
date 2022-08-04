@@ -2,3 +2,4 @@
 my-app/build/
 my-app/coverage/
 my-app/node_modules
+node_modules/
