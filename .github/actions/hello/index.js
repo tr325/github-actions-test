@@ -1,5 +1,5 @@
-cost core = require("@actions/core");
-cost github = require("@actions/github");
+const core = require("@actions/core");
+const github = require("@actions/github");
 
 
 try {

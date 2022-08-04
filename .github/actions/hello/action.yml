@@ -11,4 +11,4 @@ outputs:
     description: "When you're saying hi"
 runs:
   using: "node12"
-  main: "index.js"
+  main: "dist/index.js"
