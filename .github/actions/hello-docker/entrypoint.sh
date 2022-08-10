@@ -1,5 +1,12 @@
 #!/bin/sh -l
 
+# Test failing via bash
+if [ true ]
+then
+	echo "error"
+	exit 1
+fi
+
 
 # Format is specific to the GitHub runner machines, to get these logged at the correct level
 # This works in any language -- printf("::warning ::Warning message") etc works
@@ -20,4 +27,5 @@ echo "Some stuff"
 echo "Some stuff"
 echo "::end-group"
 
+# https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#environment-files
 echo "{HELLO}={heya!}" >> $GITHUB_ENV
