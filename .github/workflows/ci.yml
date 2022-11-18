@@ -39,7 +39,7 @@ jobs:
           path: my-app/coverage
       - name: Build project
         if: github.event_name == 'push'
-        run: cd my-app && npm run build
+        run: cd my-app && npm run build && echo "Thing"
       - name: Upload build
         if: github.event_name == 'push'
         uses: actions/upload-artifact@v1
